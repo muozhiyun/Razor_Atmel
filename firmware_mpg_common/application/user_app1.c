@@ -141,22 +141,7 @@ static void UserApp1SM_Idle(void)
   /* Increment u32Counter every 1ms cycle */
   u32Counter++;
    if(COUNTER_LIMIT_MS!=500)
-   { u32Counter = 0;
-    
-         if(bLightIsOn)
-             {
-             HEARTBEAT_OFF();
-               
-             }
-         else
-             {
-              HEARTBEAT_ON();
-              }
-      bLightIsOn = !bLightIsOn;
-      return;
-      }
-   
-     
+   {
      if(u32Counter == COUNTER_LIMIT_MS)
       {
        u32Counter = 0;
@@ -173,6 +158,19 @@ static void UserApp1SM_Idle(void)
       bLightIsOn = !bLightIsOn;
       }
       } /* end UserApp1SM_Idle() */
+   else
+   {
+     if(bLightIsOn)
+             {
+             HEARTBEAT_OFF();
+             }
+         else
+             {
+              HEARTBEAT_ON();
+              }
+     bLightIsOn = !bLightIsOn;
+   }
+}    
     
 #if 0
 /*-------------------------------------------------------------------------------------------------------------------*/
