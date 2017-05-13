@@ -91,6 +91,13 @@ void UserApp1Initialize(void)
   /* If good initialization, set state to Idle */
   if( 1 )
   {
+    LedOff(PURPLE);
+    LedOff(WHITE);
+    LedOff(BLUE);
+    LedOn(BLUE);
+    LedBlink(WHITE, LED_2HZ);
+    LedPWM(WHITE, LED_PWM_5);
+    LedPWM(PURPLE, LED_PWM_5);
     UserApp1_StateMachine = UserApp1SM_Idle;
   }
   else
