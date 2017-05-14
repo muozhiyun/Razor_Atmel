@@ -35,7 +35,9 @@ Runs current task state.  Should only be called once in main loop.
 **********************************************************************************************************************/
 
 #include "configuration.h"
-
+#define ledpart_one  1
+#define ledpart_two  2
+#define ledpart_three 3
 /***********************************************************************************************************************
 Global variable definitions with scope across entire project.
 All Global variable names shall start with "G_UserApp1"
@@ -91,7 +93,8 @@ void UserApp1Initialize(void)
   /* If good initialization, set state to Idle */
   if( 1 )
   {
-    UserApp1_StateMachine = UserApp1SM_Idle;
+       UserApp1_StateMachine= viclie;
+    //UserApp1_StateMachine = UserApp1SM_Idle;
   }
   else
   {
@@ -99,7 +102,135 @@ void UserApp1Initialize(void)
     UserApp1_StateMachine = UserApp1SM_FailedInit;
   }
 
-} /* end UserApp1Initialize() */
+}
+  void viclie(void)//back and forth the led light
+	{
+      static u8 u8_counter = 0;//increase the number	 
+      const  u16 u16_const = 1000;//const for second
+      static u16 u16_constant_for =0;
+      static BOOL B_turn_right_left = FALSE;
+      static u8 u8_counter_led_patter2 =0; 
+      static u8 u8_patter         =0 ;
+
+
+	 ///other partern led display.
+	 if(G_u32SystemTime1ms%5000==0)//5s延续
+	 	{
+	 	for(u8_counter=0;u8_counter<=7;u8_counter++)
+	 	{
+	 	    LedOff(u8_counter);
+	 	}
+	 	  u8_patter = ledpart_one;
+		  u8_counter = 0;
+		  u16_constant_for =0;
+	 	}
+	 else if(G_u32SystemTime1ms%10001==0)
+	 	{
+	 	  for(u8_counter=0;u8_counter<=7;u8_counter++)
+	 	{
+	 	    LedOff(u8_counter);
+	 	}
+	 	   u8_patter = ledpart_two;
+		   u8_counter = 0;
+		  u16_constant_for =0;
+	 	}
+	 else if (G_u32SystemTime1ms%15001 ==0)//容易出错的地方
+	 	{
+	 	for(u8_counter=0;u8_counter<=7;u8_counter++)
+	 	{
+	 	    LedOff(u8_counter);
+	 	}
+	 	u8_patter    = ledpart_three;
+		u8_counter = 0;
+		  u16_constant_for =0;
+	 	}
+
+	 ///led patter
+	 switch (u8_patter)
+	 	{
+	 	case ledpart_three:///fade the led 
+			if(G_u32SystemTime1ms%200==0)
+				{for(u8_counter=0;u8_counter<=7;u8_counter++)
+					{
+					LedPWM(u8_counter,u16_constant_for);
+					
+					}
+			      u16_constant_for++;
+				  if(u16_constant_for==20)
+				  	u16_constant_for=0;
+				}
+			break;
+	 	case ledpart_one:
+			 loop_pattern_one:	 if(u16_constant_for<=u16_const/(u8_counter*6+1))//loop:
+								 	{
+								 	 //if(B_turn_right_left==FALSE)
+								 	  LedOn(4+u8_counter);//forth
+									// else
+									  LedOn(3-u8_counter);//back
+									  //u8
+									  u16_constant_for++;
+							                  //u8_counter++;
+								 	}
+						 else
+						 	{
+								//if(B_turn_right_left == FALSE)
+									
+							 	LedOff(4+u8_counter);								//else
+								LedOff(3-u8_counter);
+							 	u16_constant_for = 0;
+								if(u8_counter==3)
+						                {
+						            if(B_turn_right_left==FALSE)
+										B_turn_right_left = TRUE;
+									else
+										B_turn_right_left=FALSE;
+									u8_counter   =0;
+									goto loop_pattern_one;
+
+									//break;
+						                }
+			                u8_counter++;
+					//
+				 	}
+		 break;
+		 case ledpart_two:
+	 
+			  loop_pattern_two:	 if(u16_constant_for<=u16_const/(u8_counter*6+1))//loop:
+				 	{
+				 	 if(B_turn_right_left==FALSE)
+				 	  LedOn(u8_counter);//forth
+					 else
+					  LedOn(7-u8_counter);//back
+					  //u8
+					  u16_constant_for++;
+			                  //u8_counter++;
+				 	}
+				 else
+				 	{
+				 	if(B_turn_right_left == FALSE)
+						
+				 	LedOff(u8_counter);
+					else
+						LedOff(7-u8_counter);
+				 	u16_constant_for = 0;
+					if(u8_counter==7)
+			                {
+			            if(B_turn_right_left==FALSE)
+							B_turn_right_left = TRUE;
+						else
+							B_turn_right_left=FALSE;
+						u8_counter   =0;
+						goto loop_pattern_two;
+
+						//break;
+			                }
+			                u8_counter++;
+					//
+				 	}
+		 break;
+	 	}
+}
+/* end UserApp1Initialize() */
 
   
 /*----------------------------------------------------------------------------------------------------------------------
